@@ -1,11 +1,13 @@
 import gzip
 import hashlib
 import json
+import os
 import time
 import threading
 
 import requests
 from kivy.app import App
+from kivy.utils import platform
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
@@ -15,6 +17,25 @@ from kivy.clock import Clock
 
 
 SERVER = "http://222.28.94.116:8030/DragonFlyServ"
+
+
+def get_cjk_font():
+    if platform != "android":
+        return None
+
+    android_font_candidates = [
+        "/system/fonts/NotoSansCJK-Regular.ttc",
+        "/system/fonts/NotoSansSC-Regular.otf",
+        "/system/fonts/SourceHanSansSC-Regular.otf",
+        "/system/fonts/DroidSansFallback.ttf",
+    ]
+    for font_path in android_font_candidates:
+        if os.path.exists(font_path):
+            return font_path
+    return None
+
+
+APP_FONT = get_cjk_font()
 
 
 def loggin(stuno, password, school):
@@ -592,47 +613,50 @@ class MainLayout(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(orientation="vertical", padding=20, spacing=10, **kwargs)
 
+        font_kwargs = {"font_name": APP_FONT} if APP_FONT else {}
+
         self.add_widget(Label(
             text="[b]跑步数据上传助手[/b]",
             markup=True,
             size_hint=(1, None),
             height=50,
             font_size="18sp",
+            **font_kwargs,
         ))
 
         self.add_widget(Label(
-            text="学号 (stuno):", size_hint=(1, None), height=30, halign="left"))
+            text="学号 (stuno):", size_hint=(1, None), height=30, halign="left", **font_kwargs))
         self.stuno_input = TextInput(
             text="", hint_text="请输入学号", multiline=False,
-            size_hint=(1, None), height=45)
+            size_hint=(1, None), height=45, **font_kwargs)
         self.add_widget(self.stuno_input)
 
         self.add_widget(Label(
-            text="学校代码:", size_hint=(1, None), height=30, halign="left"))
+            text="学校代码:", size_hint=(1, None), height=30, halign="left", **font_kwargs))
         self.school_input = TextInput(
             text="10032", multiline=False,
-            size_hint=(1, None), height=45)
+            size_hint=(1, None), height=45, **font_kwargs)
         self.add_widget(self.school_input)
 
         self.add_widget(Label(
-            text="跑步距离 (米):", size_hint=(1, None), height=30, halign="left"))
+            text="跑步距离 (米):", size_hint=(1, None), height=30, halign="left", **font_kwargs))
         self.distance_input = TextInput(
             text="2345.0", multiline=False,
-            size_hint=(1, None), height=45)
+            size_hint=(1, None), height=45, **font_kwargs)
         self.add_widget(self.distance_input)
 
         self.add_widget(Label(
-            text="配速 (米/秒):", size_hint=(1, None), height=30, halign="left"))
+            text="配速 (米/秒):", size_hint=(1, None), height=30, halign="left", **font_kwargs))
         self.speed_input = TextInput(
             text="3.3", multiline=False,
-            size_hint=(1, None), height=45)
+            size_hint=(1, None), height=45, **font_kwargs)
         self.add_widget(self.speed_input)
 
         self.add_widget(Label(
-            text="用时 (秒):", size_hint=(1, None), height=30, halign="left"))
+            text="用时 (秒):", size_hint=(1, None), height=30, halign="left", **font_kwargs))
         self.time_input = TextInput(
             text="648", multiline=False,
-            size_hint=(1, None), height=45)
+            size_hint=(1, None), height=45, **font_kwargs)
         self.add_widget(self.time_input)
 
         self.start_btn = Button(
@@ -641,12 +665,13 @@ class MainLayout(BoxLayout):
             height=55,
             font_size="16sp",
             background_color=(0.2, 0.6, 0.8, 1),
+            **font_kwargs,
         )
         self.start_btn.bind(on_press=self.do_upload)
         self.add_widget(self.start_btn)
 
         self.add_widget(Label(
-            text="运行日志:", size_hint=(1, None), height=30, halign="left"))
+            text="运行日志:", size_hint=(1, None), height=30, halign="left", **font_kwargs))
 
         self.scroll = ScrollView(size_hint=(1, 1))
         self.log_label = Label(
@@ -654,6 +679,7 @@ class MainLayout(BoxLayout):
             size_hint=(1, None),
             halign="left",
             valign="top",
+            **font_kwargs,
         )
         self.log_label.bind(texture_size=self._update_log_height)
         self.scroll.add_widget(self.log_label)
