@@ -11,7 +11,7 @@ jobs:
       - name: Build APK
         run: |
           sudo apt update
-          sudo apt install -y openjdk-17-jdk zip unzip autoconf libtool cmake libffi-dev libssl-dev zlib1g-dev
+          sudo apt install -y openjdk-17-jdk zip unzip autoconf automake libtool libtool-bin pkg-config cmake libffi-dev libssl-dev zlib1g-dev
           pip install buildozer cython
           buildozer android debug || true
           SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
