@@ -14,9 +14,6 @@ package.domain = com.runhelper
 source.dir = .
 source.include_exts = py
 
-# 主程序文件
-main.py = main.py
-
 # 依赖库
 requirements = python3,kivy,requests
 
@@ -38,6 +35,10 @@ fullscreen = 0
 # SDK 最低版本
 android.api = 31
 
+# 固定 NDK 以减少 CI 漂移
+android.ndk = 25b
+android.ndk_api = 21
+
 # 日志
 log_level = 2
 
@@ -50,11 +51,8 @@ android.allow_backup = True
 # gradle 依赖
 android.gradle_dependencies =
 
-# 架构 (armeabi-v7a 兼容性最好, arm64-v8a 是64位)
-android.arch = armeabi-v7a
-
-# 使用 p4a develop 分支 (修复更多bug)
-p4a.branch = develop
+# 仅构建 64 位架构，避免旧架构工具链带来的额外不稳定因素
+android.arch = arm64-v8a
 
 [buildozer]
 
