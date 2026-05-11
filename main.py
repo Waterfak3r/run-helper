@@ -659,8 +659,8 @@ class MainLayout(BoxLayout):
             multiline=False,
             size_hint=(1, None),
             height=108,
-            font_size="18sp",
-            padding=[16, 36, 16, 36],
+            font_size="32sp",
+            padding=[16, 20, 16, 20],
             **font_kwargs,
         )
         self.add_widget(self.stuno_input)
