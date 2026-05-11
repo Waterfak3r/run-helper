@@ -23,6 +23,10 @@ jobs:
           mv "$SDK"/cmdline-tools/cmdline-tools "$SDK"/cmdline-tools/latest
           chmod +x "$SDK"/cmdline-tools/latest/bin/*
 
+          # buildozer looks for old SDK layout (tools/bin/), symlink to new layout
+          mkdir -p "$SDK"/tools
+          ln -s ../cmdline-tools/latest/bin "$SDK"/tools/bin
+
           SDKMGR="$SDK"/cmdline-tools/latest/bin/sdkmanager
           yes | $SDKMGR --sdk_root="$SDK" --licenses
           $SDKMGR --sdk_root="$SDK" "build-tools;33.0.0" "platforms;android-31" "platform-tools"
