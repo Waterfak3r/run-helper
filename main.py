@@ -691,17 +691,35 @@ class MainLayout(BoxLayout):
 
     def show_disclaimer(self, font_kwargs):
         content = BoxLayout(orientation="vertical", spacing=12, padding=16)
+        scroll = ScrollView(size_hint=(1, 1))
         message = Label(
-            text="本APP只作为技术学习和验证使用，其余人运用本APP所做的任何行为与本人无关。",
+            text=(
+                "[b]本APP只作为技术学习和验证使用，其余人运用本APP所做的任何行为与本人无关。[/b]\n\n"
+                "[b]免责声明[/b]\n"
+                "[b]1. 技术研究定位[/b]\n"
+                "本项目所有代码、文档及相关内容，仅用于技术交流与学习，"
+                "旨在帮助开发者理解校园跑类应用的技术逻辑，严禁将项目相关技术或"
+                "衍生成果用于上传校园跑实际成绩、规避正常运动要求等违规行为。\n\n"
+                "[b]2. 健康与合规提示[/b]\n"
+                "[b]实际运动优先：[/b]校园跑的核心目的是促进学生身心健康，规律的户外跑步"
+                "能有效提升体能、改善精神状态，远优于任何技术手段的“模拟”。"
+                "我们强烈建议所有使用者遵循学校规定，通过真实运动完成校园跑任务。\n\n"
+                "[b]风险自行承担：[/b]若任何个人或团体违反学校规定，使用本项目相关技术进行"
+                "校园跑作弊，导致被学校通报批评、成绩作废、纪律处分等后果，均与本项目"
+                "作者及贡献者无关，所有责任由违规使用者自行承担。"
+            ),
+            markup=True,
             halign="left",
-            valign="middle",
+            valign="top",
+            size_hint_y=None,
             **font_kwargs,
         )
         message.bind(
             size=lambda instance, value: setattr(instance, "text_size", value),
             texture_size=self._update_disclaimer_height,
         )
-        content.add_widget(message)
+        scroll.add_widget(message)
+        content.add_widget(scroll)
 
         button_row = BoxLayout(size_hint=(1, None), height=52, spacing=10)
         agree_btn = Button(text="同意", **font_kwargs)
@@ -714,7 +732,7 @@ class MainLayout(BoxLayout):
             title="免责声明",
             content=content,
             size_hint=(0.88, None),
-            height=260,
+            height=460,
             auto_dismiss=False,
             **font_kwargs,
         )
@@ -724,7 +742,7 @@ class MainLayout(BoxLayout):
         popup.open()
 
     def _update_disclaimer_height(self, instance, value):
-        instance.height = max(value[1], 72)
+        instance.height = max(value[1], 240)
 
     def _update_log_height(self, instance, value):
         instance.height = value[1]
