@@ -48,9 +48,6 @@ android.accept_sdk_license = True
 # 启用闪退报告
 android.allow_backup = True
 
-# gradle 依赖
-android.gradle_dependencies =
-
 # 仅构建 64 位架构，避免旧架构工具链带来的额外不稳定因素
 android.arch = arm64-v8a
 
