@@ -41,6 +41,9 @@ android.api = 31
 # 日志
 log_level = 2
 
+# 自动接受SDK license (避免交互)
+android.accept_sdk_license = True
+
 # 启用闪退报告
 android.allow_backup = True
 
@@ -49,6 +52,9 @@ android.gradle_dependencies =
 
 # 架构 (armeabi-v7a 兼容性最好, arm64-v8a 是64位)
 android.arch = armeabi-v7a
+
+# 使用 p4a develop 分支 (修复更多bug)
+p4a.branch = develop
 
 [buildozer]
 
