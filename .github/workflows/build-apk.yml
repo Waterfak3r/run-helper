@@ -9,25 +9,25 @@ jobs:
       - name: Setup Android SDK
         run: |
           SDK=$HOME/.buildozer/android/platform/android-sdk
-          mkdir -p "$SDK"/cmdline-tools
+          mkdir -p "$SDK"/tools
 
           # Download Android command-line tools (using python3 since curl/wget may not exist)
           CMDLINE_URL=https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           echo "Downloading cmdline-tools..."
           python3 -c "
-          import urllib.request, zipfile
+          import urllib.request, zipfile, shutil, os
           urllib.request.urlretrieve('$CMDLINE_URL', '/tmp/cmdline-tools.zip')
           with zipfile.ZipFile('/tmp/cmdline-tools.zip') as z:
-              z.extractall('$SDK/cmdline-tools')
+              z.extractall('/tmp/cmdline-extract')
+          # Move cmdline-tools contents into tools/ (old SDK layout that buildozer expects)
+          src = '/tmp/cmdline-extract/cmdline-tools'
+          for item in os.listdir(src):
+              shutil.move(os.path.join(src, item), os.path.join('$SDK/tools', item))
+          os.chmod('$SDK/tools/bin/sdkmanager', 0o755)
+          os.chmod('$SDK/tools/bin/avdmanager', 0o755)
           "
-          mv "$SDK"/cmdline-tools/cmdline-tools "$SDK"/cmdline-tools/latest
-          chmod +x "$SDK"/cmdline-tools/latest/bin/*
 
-          # buildozer looks for old SDK layout (tools/bin/), symlink to new layout
-          mkdir -p "$SDK"/tools
-          ln -s ../cmdline-tools/latest/bin "$SDK"/tools/bin
-
-          SDKMGR="$SDK"/cmdline-tools/latest/bin/sdkmanager
+          SDKMGR="$SDK"/tools/bin/sdkmanager
           yes | $SDKMGR --sdk_root="$SDK" --licenses
           $SDKMGR --sdk_root="$SDK" "build-tools;33.0.0" "platforms;android-31" "platform-tools"
       - name: Build APK
