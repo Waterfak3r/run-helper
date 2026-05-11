@@ -658,9 +658,9 @@ class MainLayout(BoxLayout):
             hint_text="请输入学号",
             multiline=False,
             size_hint=(1, None),
-            height=54,
+            height=108,
             font_size="18sp",
-            padding=[16, 14, 16, 14],
+            padding=[16, 36, 16, 36],
             **font_kwargs,
         )
         self.add_widget(self.stuno_input)
@@ -722,7 +722,7 @@ class MainLayout(BoxLayout):
             title="免责声明",
             content=content,
             size_hint=(0.88, None),
-            height=460,
+            height=1380,
             auto_dismiss=False,
         )
 
@@ -757,7 +757,7 @@ class MainLayout(BoxLayout):
             title=title,
             content=content,
             size_hint=(0.84, None),
-            height=220,
+            height=660,
             auto_dismiss=True,
         )
         close_btn.bind(on_press=popup.dismiss)
