@@ -613,79 +613,69 @@ def upload(studentno, school, uid, distance, speed, time2):
 
 class MainLayout(BoxLayout):
     def __init__(self, **kwargs):
-        super().__init__(orientation="vertical", padding=20, spacing=10, **kwargs)
+        super().__init__(orientation="vertical", padding=20, spacing=14, **kwargs)
 
         font_kwargs = {"font_name": APP_FONT} if APP_FONT else {}
+        self.upload_defaults = {
+            "school": "10032",
+            "distance": "2000.0",
+            "speed": "3.3",
+            "time2": 606,
+        }
 
         self.add_widget(Label(
             text="[b]跑步数据上传助手[/b]",
             markup=True,
             size_hint=(1, None),
-            height=50,
-            font_size="18sp",
+            height=56,
+            font_size="20sp",
             **font_kwargs,
         ))
 
         self.add_widget(Label(
-            text="学号 (stuno):", size_hint=(1, None), height=30, halign="left", **font_kwargs))
+            text="请输入学号",
+            size_hint=(1, None),
+            height=32,
+            halign="left",
+            valign="middle",
+            **font_kwargs,
+        ))
+
+        reminder = Label(
+            text="每次上传按 2km 处理，每日限制 4km。",
+            size_hint=(1, None),
+            height=52,
+            halign="left",
+            valign="middle",
+            color=(0.35, 0.35, 0.35, 1),
+            **font_kwargs,
+        )
+        reminder.bind(size=lambda instance, value: setattr(instance, "text_size", value))
+        self.add_widget(reminder)
+
         self.stuno_input = TextInput(
-            text="", hint_text="请输入学号", multiline=False,
-            size_hint=(1, None), height=45, **font_kwargs)
+            text="",
+            hint_text="请输入学号",
+            multiline=False,
+            size_hint=(1, None),
+            height=54,
+            font_size="18sp",
+            padding=[16, 14, 16, 14],
+            **font_kwargs,
+        )
         self.add_widget(self.stuno_input)
-
-        self.add_widget(Label(
-            text="学校代码:", size_hint=(1, None), height=30, halign="left", **font_kwargs))
-        self.school_input = TextInput(
-            text="10032", multiline=False,
-            size_hint=(1, None), height=45, **font_kwargs)
-        self.add_widget(self.school_input)
-
-        self.add_widget(Label(
-            text="跑步距离 (米):", size_hint=(1, None), height=30, halign="left", **font_kwargs))
-        self.distance_input = TextInput(
-            text="2345.0", multiline=False,
-            size_hint=(1, None), height=45, **font_kwargs)
-        self.add_widget(self.distance_input)
-
-        self.add_widget(Label(
-            text="配速 (米/秒):", size_hint=(1, None), height=30, halign="left", **font_kwargs))
-        self.speed_input = TextInput(
-            text="3.3", multiline=False,
-            size_hint=(1, None), height=45, **font_kwargs)
-        self.add_widget(self.speed_input)
-
-        self.add_widget(Label(
-            text="用时 (秒):", size_hint=(1, None), height=30, halign="left", **font_kwargs))
-        self.time_input = TextInput(
-            text="648", multiline=False,
-            size_hint=(1, None), height=45, **font_kwargs)
-        self.add_widget(self.time_input)
 
         self.start_btn = Button(
             text="开始上传",
             size_hint=(1, None),
-            height=55,
-            font_size="16sp",
+            height=58,
+            font_size="18sp",
             background_color=(0.2, 0.6, 0.8, 1),
             **font_kwargs,
         )
         self.start_btn.bind(on_press=self.do_upload)
         self.add_widget(self.start_btn)
-
-        self.add_widget(Label(
-            text="运行日志:", size_hint=(1, None), height=30, halign="left", **font_kwargs))
-
-        self.scroll = ScrollView(size_hint=(1, 1))
-        self.log_label = Label(
-            text="等待操作...",
-            size_hint=(1, None),
-            halign="left",
-            valign="top",
-            **font_kwargs,
-        )
-        self.log_label.bind(texture_size=self._update_log_height)
-        self.scroll.add_widget(self.log_label)
-        self.add_widget(self.scroll)
+        self.add_widget(Label(size_hint=(1, 1)))
 
         Clock.schedule_once(lambda dt: self.show_disclaimer(font_kwargs), 0)
 
@@ -744,63 +734,74 @@ class MainLayout(BoxLayout):
     def _update_disclaimer_height(self, instance, value):
         instance.height = max(value[1], 240)
 
-    def _update_log_height(self, instance, value):
-        instance.height = value[1]
+    def show_status_popup(self, title, message):
+        font_kwargs = {"font_name": APP_FONT} if APP_FONT else {}
+        content = BoxLayout(orientation="vertical", spacing=12, padding=16)
+        body = Label(
+            text=message,
+            halign="left",
+            valign="middle",
+            **font_kwargs,
+        )
+        body.bind(size=lambda instance, value: setattr(instance, "text_size", value))
+        content.add_widget(body)
 
-    def log(self, msg):
-        current = self.log_label.text
-        if current == "等待操作...":
-            current = ""
-        self.log_label.text = current + msg + "\n"
+        close_btn = Button(
+            text="确定",
+            size_hint=(1, None),
+            height=48,
+            **font_kwargs,
+        )
+        content.add_widget(close_btn)
+
+        popup = Popup(
+            title=title,
+            content=content,
+            size_hint=(0.84, None),
+            height=220,
+            auto_dismiss=True,
+            **font_kwargs,
+        )
+        close_btn.bind(on_press=popup.dismiss)
+        popup.open()
 
     def do_upload(self, instance):
         stuno = self.stuno_input.text.strip()
-        school = self.school_input.text.strip() or "10032"
-        distance = self.distance_input.text.strip() or "2345.0"
-        speed = self.speed_input.text.strip() or "3.3"
-        time2 = int(self.time_input.text.strip() or "648")
+        school = self.upload_defaults["school"]
+        distance = self.upload_defaults["distance"]
+        speed = self.upload_defaults["speed"]
+        time2 = self.upload_defaults["time2"]
 
         if not stuno:
-            self.log("[错误] 请输入学号！")
+            self.show_status_popup("提示", "请输入学号后再开始上传。")
             return
 
         self.start_btn.disabled = True
         self.start_btn.text = "运行中..."
-        self.log_label.text = ""
 
         def run():
             try:
-                self._log("[1/4] 正在登录...")
                 password = hashlib.md5(stuno.encode()).hexdigest()
                 uid = loggin(stuno, password, school)
                 if not uid:
-                    self._log("[错误] 登录失败，请检查学号和学校代码！")
+                    self._show_status("提示", "登录失败，请检查学号后重试。")
                     self._finish()
                     return
-                self._log(f"[OK] 登录成功, uid={uid}")
 
-                self._log("[2/4] 正在获取跑步数据...")
-                info = getinfo(stuno, uid, school)
-                self._log(f"[OK] 获取成功: {info}")
+                getinfo(stuno, uid, school)
 
-                self._log(f"[3/4] 正在上传跑步数据 (距离={distance}m, 配速={speed}m/s, 用时={time2}s)...")
                 result = upload(stuno, school, uid, distance, speed, time2)
-                self._log(f"[OK] 上传成功: {result}")
-
-                self._log("[4/4] 正在刷新数据...")
                 info = getinfo(stuno, uid, school)
-                self._log(f"[OK] 刷新成功: {info}")
-
-                self._log("\n===== 全部完成 =====")
+                self._show_status("上传结果", f"上传成功。\n\n返回结果：{result}\n\n刷新结果：{info}")
             except Exception as e:
-                self._log(f"[异常] {e}")
+                self._show_status("异常", str(e))
             finally:
                 self._finish()
 
         threading.Thread(target=run, daemon=True).start()
 
-    def _log(self, msg):
-        Clock.schedule_once(lambda dt: self.log(msg), 0)
+    def _show_status(self, title, message):
+        Clock.schedule_once(lambda dt: self.show_status_popup(title, message), 0)
 
     def _finish(self):
         def reset():
