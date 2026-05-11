@@ -7,7 +7,9 @@ import threading
 
 import requests
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.utils import platform
+from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
@@ -685,6 +687,45 @@ class MainLayout(BoxLayout):
         self.scroll.add_widget(self.log_label)
         self.add_widget(self.scroll)
 
+        Clock.schedule_once(lambda dt: self.show_disclaimer(font_kwargs), 0)
+
+    def show_disclaimer(self, font_kwargs):
+        content = BoxLayout(orientation="vertical", spacing=12, padding=16)
+        message = Label(
+            text="本APP只作为技术学习和验证使用，其余人运用本APP所做的任何行为与本人无关。",
+            halign="left",
+            valign="middle",
+            **font_kwargs,
+        )
+        message.bind(
+            size=lambda instance, value: setattr(instance, "text_size", value),
+            texture_size=self._update_disclaimer_height,
+        )
+        content.add_widget(message)
+
+        button_row = BoxLayout(size_hint=(1, None), height=52, spacing=10)
+        agree_btn = Button(text="同意", **font_kwargs)
+        exit_btn = Button(text="退出", **font_kwargs)
+        button_row.add_widget(agree_btn)
+        button_row.add_widget(exit_btn)
+        content.add_widget(button_row)
+
+        popup = Popup(
+            title="免责声明",
+            content=content,
+            size_hint=(0.88, None),
+            height=260,
+            auto_dismiss=False,
+            **font_kwargs,
+        )
+
+        agree_btn.bind(on_press=popup.dismiss)
+        exit_btn.bind(on_press=lambda instance: self.exit_app())
+        popup.open()
+
+    def _update_disclaimer_height(self, instance, value):
+        instance.height = max(value[1], 72)
+
     def _update_log_height(self, instance, value):
         instance.height = value[1]
 
@@ -748,6 +789,12 @@ class MainLayout(BoxLayout):
             self.start_btn.disabled = False
             self.start_btn.text = "开始上传"
         Clock.schedule_once(lambda dt: reset(), 0)
+
+    def exit_app(self):
+        app = App.get_running_app()
+        if app:
+            app.stop()
+        Window.close()
 
 
 class FuckHQTApp(App):
