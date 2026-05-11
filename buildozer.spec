@@ -18,11 +18,14 @@ source.include_exts = py
 main.py = main.py
 
 # 依赖库
-requirements = python3,kivy,requests,urllib3,charset-normalizer,idna,certifi
+requirements = python3,kivy==2.3.0,requests,urllib3,charset-normalizer,idna,certifi
 
 # Android 最低 API 级别
 android.minapi = 21
-# android.ndk = 25.2.9519653  # 注释掉让 buildozer 自动选择
+android.ndk = 25.2.9519653
+
+# python-for-android 配置
+p4a.branch = develop
 
 # 权限
 android.permissions = INTERNET
