@@ -681,11 +681,22 @@ class MainLayout(BoxLayout):
 
     def show_disclaimer(self, font_kwargs):
         content = BoxLayout(orientation="vertical", spacing=12, padding=16)
+        header = Label(
+            text="[b]免责声明[/b]",
+            markup=True,
+            size_hint=(1, None),
+            height=40,
+            halign="center",
+            valign="middle",
+            **font_kwargs,
+        )
+        header.bind(size=lambda instance, value: setattr(instance, "text_size", value))
+        content.add_widget(header)
+
         scroll = ScrollView(size_hint=(1, 1))
         message = Label(
             text=(
                 "[b]本APP只作为技术学习和验证使用，其余人运用本APP所做的任何行为与本人无关。[/b]\n\n"
-                "[b]免责声明[/b]\n"
                 "[b]1. 技术研究定位[/b]\n"
                 "本项目所有代码、文档及相关内容，仅用于技术交流与学习，"
                 "旨在帮助开发者理解校园跑类应用的技术逻辑，严禁将项目相关技术或"
@@ -719,10 +730,9 @@ class MainLayout(BoxLayout):
         content.add_widget(button_row)
 
         popup = Popup(
-            title="免责声明",
+            title="",
             content=content,
-            size_hint=(0.88, None),
-            height=1380,
+            size_hint=(0.92, 0.9),
             auto_dismiss=False,
         )
 
