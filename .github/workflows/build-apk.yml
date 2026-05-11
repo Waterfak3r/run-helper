@@ -11,11 +11,15 @@ jobs:
           SDK=$HOME/.buildozer/android/platform/android-sdk
           mkdir -p "$SDK"/cmdline-tools
 
-          # Download Android command-line tools
+          # Download Android command-line tools (using python3 since curl/wget may not exist)
           CMDLINE_URL=https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           echo "Downloading cmdline-tools..."
-          curl -sL -o /tmp/cmdline-tools.zip "$CMDLINE_URL"
-          unzip -q /tmp/cmdline-tools.zip -d "$SDK"/cmdline-tools
+          python3 -c "
+          import urllib.request, zipfile
+          urllib.request.urlretrieve('$CMDLINE_URL', '/tmp/cmdline-tools.zip')
+          with zipfile.ZipFile('/tmp/cmdline-tools.zip') as z:
+              z.extractall('$SDK/cmdline-tools')
+          "
           mv "$SDK"/cmdline-tools/cmdline-tools "$SDK"/cmdline-tools/latest
 
           SDKMGR="$SDK"/cmdline-tools/latest/bin/sdkmanager
