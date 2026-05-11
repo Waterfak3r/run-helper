@@ -14,7 +14,7 @@ jobs:
           # Download Android command-line tools
           CMDLINE_URL=https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           echo "Downloading cmdline-tools..."
-          wget -q -O /tmp/cmdline-tools.zip "$CMDLINE_URL"
+          curl -sL -o /tmp/cmdline-tools.zip "$CMDLINE_URL"
           unzip -q /tmp/cmdline-tools.zip -d "$SDK"/cmdline-tools
           mv "$SDK"/cmdline-tools/cmdline-tools "$SDK"/cmdline-tools/latest
 
