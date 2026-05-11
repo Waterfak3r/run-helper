@@ -6,6 +6,11 @@ jobs:
     container: kivy/buildozer
     steps:
       - uses: actions/checkout@v4
+      - name: Setup SDK
+        run: |
+          SDK=$HOME/.buildozer/android/platform/android-sdk
+          yes | $SDK/cmdline-tools/latest/bin/sdkmanager --sdk_root=$SDK --licenses
+          $SDK/cmdline-tools/latest/bin/sdkmanager --sdk_root=$SDK "build-tools;33.0.0" "platforms;android-31" "platform-tools"
       - name: Build APK
         run: echo "y" | buildozer android debug
       - uses: actions/upload-artifact@v4
