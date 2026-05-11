@@ -1,7 +1,4 @@
 # fuckhongqingting - 飞翔的红蜻蜓校园跑辅助工具（技术研究版）
-<img width="162" height="162" alt="image" src="https://github.com/user-attachments/assets/7308903e-064c-4d49-af69-300a2b4db6a1" />
-
-关于校园跑app的下载地址，可以前往 https://www.danji100.com/app/157526.html
 
 ## 项目介绍
 本项目是针对飞翔的红蜻蜓校园跑APP系统的**技术研究与学习载体**，核心目标是探索运动数据采集、路径模拟、移动端应用交互等技术原理。项目包含代码示例、技术文档与原理分析，旨在为开发者提供一个学习Android/iOS应用逆向、数据格式解析、地理位置模拟等技术的参考案例，不涉及任何可直接用于"作弊"的成品工具。
