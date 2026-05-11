@@ -21,6 +21,7 @@ jobs:
               z.extractall('$SDK/cmdline-tools')
           "
           mv "$SDK"/cmdline-tools/cmdline-tools "$SDK"/cmdline-tools/latest
+          chmod +x "$SDK"/cmdline-tools/latest/bin/*
 
           SDKMGR="$SDK"/cmdline-tools/latest/bin/sdkmanager
           yes | $SDKMGR --sdk_root="$SDK" --licenses
