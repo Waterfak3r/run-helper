@@ -724,7 +724,6 @@ class MainLayout(BoxLayout):
             size_hint=(0.88, None),
             height=460,
             auto_dismiss=False,
-            **font_kwargs,
         )
 
         agree_btn.bind(on_press=popup.dismiss)
@@ -760,7 +759,6 @@ class MainLayout(BoxLayout):
             size_hint=(0.84, None),
             height=220,
             auto_dismiss=True,
-            **font_kwargs,
         )
         close_btn.bind(on_press=popup.dismiss)
         popup.open()
